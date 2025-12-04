@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            width: 100vw;
+            height: 100vh;
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+            transition: background-image 0.5s ease;
+            overflow: hidden;
+            background-color: black;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Default background if none selected */
+        body {
+            background-image: url('https://i.postimg.cc/zXP5Rz6C/summercafe.png');
+        }
+        
+        .edit-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s ease;
+        }
+        
+        .edit-button img {
+            display: block;
+            width: 120px;
+            height: auto;
+        }
+        
+        .edit-button:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+        }
+        
+        .dessert-image {
+            position: fixed;
+            bottom: -5%;
+            left: 40%;
+            transform: translateX(-50%);
+            max-width: 400px;
+            width: 35%;
+            height: auto;
+            z-index: 100;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .dessert-image.show {
+            opacity: 1;
+        }
+        
+        .drink-image {
+            position: fixed;
+            bottom: 1%;
+            left: 60%;
+            transform: translateX(-50%);
+            max-width: 300px;
+            width: 25%;
+            height: auto;
+            z-index: 100;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .drink-image.show {
+            opacity: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .dessert-image {
+                width: 55%;
+                bottom: 0.5%;
+                left: 35%;
+            }
+            
+            .drink-image {
+                width: 55%;
+                bottom: 0.5%;
+                left: 65%;
+            }
+            
+            /* On small screens, shrink and tuck sound controls closer to the corner */
+            .music-controls {
+                width: min(60vw, 200px);
+                right: 4vw;
+                padding: 10px 12px;
+            }
+            
+            #ambienceControls {
+                top: 6vh;
+                bottom: auto !important;
+            }
+            
+            .music-image {
+                width: min(32vw, 120px);
+            }
+        }
+        
+        .music-controls {
+            position: fixed;
+            /* Keep controls in the far right margin so they minimize overlap with the illustration */
+            bottom: 4vh;
+            right: 4vw;
+            z-index: 1002;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 15px 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            width: min(50vw, 230px);
+            min-width: 0;
+            max-width: 230px;
+        }
+        
+        #ambienceControls {
+            /* Float ambience controls above music controls along the same edge */
+            top: 8vh;
+            bottom: auto !important;
+        }
+        
+        .music-image {
+            width: min(35vw, 180px);
+            height: auto;
+            object-fit: contain;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+            transition: transform 0.3s ease;
+        }
+        
+        .music-image.rotating {
+            animation: rotate360 3s linear infinite;
+        }
+        
+        @keyframes rotate360 {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .music-title {
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 5px;
+        }
+        
+        .music-buttons-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .music-controls button {
+            background: #000;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1em;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .music-controls button:hover {
+            background: #333;
+            transform: scale(1.05);
+        }
+        
+        .music-controls.hidden {
+            display: none;
+        }
+        
+        #pauseBtn, #resumeBtn {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <a href="page1.html" class="edit-button">
+        <img src="https://i.postimg.cc/j5zsm5K0/edit.png" alt="Edit Selection">
+    </a>
+    <img id="dessertImg" class="dessert-image" src="" alt="Dessert">
+    <img id="drinkImg" class="drink-image" src="" alt="Drink">
+    <div class="music-controls hidden" id="musicControls">
+        <audio id="backgroundMusic" loop preload="auto"></audio>
+        <img id="musicImage" class="music-image" src="" alt="Music" style="display: none;">
+        <div class="music-title" id="musicTitle">Merry Christmas</div>
+        <div class="music-buttons-container">
+            <button id="pauseBtn">Pause</button>
+            <button id="resumeBtn">Resume</button>
+        </div>
+    </div>
+    <div class="music-controls hidden" id="ambienceControls" style="bottom: 320px;">
+        <audio id="backgroundAmbience" loop preload="auto"></audio>
+        <img id="ambienceImage" class="music-image" src="" alt="Ambience" style="display: none;">
+        <div class="music-title" id="ambienceTitle">Beach Waves</div>
+        <div class="music-buttons-container">
+            <button id="ambiencePauseBtn">Pause</button>
+            <button id="ambienceResumeBtn">Resume</button>
+        </div>
+    </div>
+    <script>
+        // Get the selected background from localStorage
+        const selectedBackground = localStorage.getItem('selectedBackground');
+        const backgroundUrl = selectedBackground || 'https://i.postimg.cc/zXP5Rz6C/summercafe.png';
+        
+        // Set the background image
+        document.body.style.backgroundImage = `url('${backgroundUrl}')`;
+        
+        // Get selected dessert and display it
+        const selectedDessertImg = localStorage.getItem('selectedDessertImg');
+        const dessertImg = document.getElementById('dessertImg');
+        
+        if (selectedDessertImg) {
+            dessertImg.src = selectedDessertImg;
+            // Show the dessert image after a short delay for smooth appearance
+            setTimeout(() => {
+                dessertImg.classList.add('show');
+            }, 300);
+        }
+        
+        // Get selected drink and display it
+        const selectedDrinkImg = localStorage.getItem('selectedDrinkImg');
+        const drinkImg = document.getElementById('drinkImg');
+        
+        if (selectedDrinkImg) {
+            drinkImg.src = selectedDrinkImg;
+            // Show the drink image after a short delay for smooth appearance
+            setTimeout(() => {
+                drinkImg.classList.add('show');
+            }, 300);
+        }
+        
+        // Music functionality
+        const selectedMusic = localStorage.getItem('selectedMusic');
+        const selectedMusicTitle = localStorage.getItem('selectedMusicTitle') || 'Merry Christmas';
+        const selectedMusicImg = localStorage.getItem('selectedMusicImg');
+        const musicControls = document.getElementById('musicControls');
+        const musicTitle = document.getElementById('musicTitle');
+        const musicImage = document.getElementById('musicImage');
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const resumeBtn = document.getElementById('resumeBtn');
+        
+        if (selectedMusic && selectedMusic !== 'none') {
+            // Show music controls and set title
+            musicControls.classList.remove('hidden');
+            musicTitle.textContent = selectedMusicTitle;
+            
+            // Display music image if available
+            if (selectedMusicImg) {
+                musicImage.src = selectedMusicImg;
+                musicImage.style.display = 'block';
+                musicImage.alt = selectedMusicTitle;
+                console.log('Loading music image from:', selectedMusicImg);
+                // Handle image load error
+                musicImage.onerror = function() {
+                    console.error('Failed to load music image:', selectedMusicImg);
+                    console.error('Trying to reload image...');
+                    // Try reloading after a short delay
+                    setTimeout(() => {
+                        this.src = selectedMusicImg + '?t=' + Date.now();
+                    }, 1000);
+                };
+                // Handle image load success
+                musicImage.onload = function() {
+                    console.log('Music image loaded successfully:', selectedMusicImg);
+                };
+            } else {
+                console.log('No music image URL found in localStorage');
+                console.log('Selected music:', selectedMusic);
+                console.log('Selected music title:', selectedMusicTitle);
+            }
+            
+            // Extract file ID from Google Drive link if present
+            let fileId = null;
+            
+            if (selectedMusic.includes('drive.google.com')) {
+                const fileIdMatch = selectedMusic.match(/[\/=]([a-zA-Z0-9_-]{25,})/);
+                if (fileIdMatch) {
+                    fileId = fileIdMatch[1];
+                }
+            }
+            
+            // Build URL formats to try
+            let urlFormats = [];
+            if (fileId) {
+                // Try direct Google Drive links first
+                const directUrl = `https://drive.google.com/uc?id=${fileId}&export=download`;
+                urlFormats = [
+                    directUrl,
+                    `https://drive.google.com/uc?export=download&id=${fileId}`,
+                    `https://docs.google.com/uc?export=download&id=${fileId}`,
+                    // Try CORS proxy as fallback (these services may be unreliable)
+                    `https://corsproxy.io/?${encodeURIComponent(directUrl)}`,
+                    `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`
+                ];
+            } else if (selectedMusic.includes('raw.githubusercontent.com')) {
+                // For GitHub raw URLs, try multiple formats
+                urlFormats = [selectedMusic]; // Start with original URL
+                
+                // Try without refs/heads
+                if (selectedMusic.includes('/refs/heads/')) {
+                    urlFormats.push(selectedMusic.replace('/refs/heads/main/', '/main/'));
+                }
+                
+                // For Smell of Flowers specifically, try filename variations
+                if (selectedMusic.includes('smellofflowers') || selectedMusic.includes('Smellofflowers')) {
+                    // Try lowercase filename
+                    urlFormats.push(selectedMusic.replace(/Smellofflowers/g, 'smellofflowers'));
+                    // Try without special character encoding (en dash)
+                    urlFormats.push(selectedMusic.replace('%20%E2%80%91%20', '%20'));
+                    urlFormats.push(selectedMusic.replace('%20%E2%80%91%20', '-'));
+                    // Try with underscore instead of space
+                    urlFormats.push(selectedMusic.replace(/Smellofflowers%20/g, 'Smellofflowers_'));
+                    urlFormats.push(selectedMusic.replace(/smellofflowers%20/g, 'smellofflowers_'));
+                }
+            } else {
+                urlFormats = [selectedMusic];
+            }
+            
+            let currentUrlIndex = 0;
+            let isLoaded = false;
+            let hasTriedProxy = false;
+            
+            function loadMusic(urlIndex) {
+                if (urlIndex >= urlFormats.length) {
+                    console.error('All music URL formats failed.');
+                    musicTitle.innerHTML = selectedMusicTitle + '<br><small style="color: red; font-size: 0.7em;">Google Drive blocked. Please host audio file elsewhere.</small>';
+                    musicTitle.style.cursor = 'help';
+                    musicTitle.title = 'Google Drive blocks direct audio playback. Try uploading to: PostImage, SoundCloud, or a direct file host.';
+                    return;
+                }
+                
+                currentUrlIndex = urlIndex;
+                const url = urlFormats[urlIndex];
+                console.log('Trying to load music from:', url);
+                
+                // Check if we're trying a proxy
+                if (url.includes('corsproxy.io') || url.includes('allorigins.win')) {
+                    hasTriedProxy = true;
+                }
+                
+                backgroundMusic.src = url;
+                backgroundMusic.volume = 0.2;
+                backgroundMusic.load();
+                
+                // Handle successful load
+                backgroundMusic.addEventListener('loadeddata', function onLoaded() {
+                    backgroundMusic.removeEventListener('loadeddata', onLoaded);
+                    isLoaded = true;
+                    console.log('Music loaded successfully with format', urlIndex + 1);
+                    musicTitle.textContent = selectedMusicTitle;
+                }, { once: true });
+                
+                // Handle can play - auto-start music
+                backgroundMusic.addEventListener('canplay', function onCanPlay() {
+                    backgroundMusic.removeEventListener('canplay', onCanPlay);
+                    isLoaded = true;
+                    console.log('Music can play with format', urlIndex + 1);
+                    musicTitle.textContent = selectedMusicTitle;
+                    // Auto-start music
+                    const playPromise = backgroundMusic.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            console.log('Music auto-playing successfully');
+                            updateButtonState();
+                        }).catch(error => {
+                            console.log('Auto-play prevented, user interaction may be required:', error);
+                        });
+                    }
+                }, { once: true });
+                
+                // Handle errors
+                backgroundMusic.addEventListener('error', function onError(e) {
+                    backgroundMusic.removeEventListener('error', onError);
+                    const errorCode = backgroundMusic.error ? backgroundMusic.error.code : 'unknown';
+                    const errorMessage = backgroundMusic.error ? backgroundMusic.error.message : 'Unknown error';
+                    console.error('Audio error with format', urlIndex + 1, ':', errorCode, errorMessage);
+                    console.error('Failed URL:', url);
+                    
+                    if (urlIndex < urlFormats.length - 1) {
+                        // Try next URL format
+                        setTimeout(() => {
+                            loadMusic(urlIndex + 1);
+                        }, 500);
+                    } else {
+                        console.error('All music URL formats failed.');
+                        musicTitle.innerHTML = selectedMusicTitle + '<br><small style="color: red; font-size: 0.7em;">Error loading audio. Check console for details.</small>';
+                        musicTitle.style.cursor = 'help';
+                        musicTitle.title = 'Failed to load audio. Check browser console (F12) for error details.';
+                    }
+                }, { once: true });
+            }
+            
+            // Start loading music
+            loadMusic(0);
+            
+            // Update button visibility and rotation based on playback state
+            function updateButtonState() {
+                if (backgroundMusic.paused) {
+                    musicControls.classList.remove('music-playing');
+                    musicControls.classList.add('music-paused');
+                    // Stop rotation when paused
+                    musicImage.classList.remove('rotating');
+                } else {
+                    musicControls.classList.remove('music-paused');
+                    musicControls.classList.add('music-playing');
+                    // Start rotation when playing
+                    musicImage.classList.add('rotating');
+                }
+            }
+            
+            // Listen to play/pause events
+            backgroundMusic.addEventListener('play', updateButtonState);
+            backgroundMusic.addEventListener('pause', updateButtonState);
+            
+            // Also try on first user interaction (for autoplay restrictions)
+            document.addEventListener('click', function playOnClick(e) {
+                // Ignore clicks on the music controls so Pause/Resume work on first click
+                if (musicControls && musicControls.contains(e.target)) {
+                    return;
+                }
+                if (backgroundMusic.paused && backgroundMusic.readyState >= 2) {
+                    backgroundMusic.play().then(() => {
+                        updateButtonState();
+                    }).catch(error => {
+                        console.log('Play error on click:', error);
+                    });
+                }
+                document.removeEventListener('click', playOnClick);
+            }, { once: true });
+            
+            // Pause button
+            pauseBtn.addEventListener('click', function() {
+                backgroundMusic.pause();
+                updateButtonState();
+            });
+            
+            // Resume button
+            resumeBtn.addEventListener('click', function() {
+                if (backgroundMusic.readyState >= 2) {
+                    backgroundMusic.play().then(() => {
+                        updateButtonState();
+                    }).catch(error => {
+                        console.log('Resume error:', error);
+                        // Try reloading if there's an error
+                        backgroundMusic.load();
+                        setTimeout(() => {
+                            backgroundMusic.play().then(() => {
+                                updateButtonState();
+                            }).catch(e => console.log('Retry failed:', e));
+                        }, 500);
+                    });
+                } else {
+                    // If not loaded, try loading first
+                    backgroundMusic.load();
+                    setTimeout(() => {
+                        backgroundMusic.play().then(() => {
+                            updateButtonState();
+                        }).catch(e => console.log('Play after load failed:', e));
+                    }, 500);
+                }
+            });
+            
+            // Initial state
+            updateButtonState();
+        }
+        
+        // Ambience functionality
+        const selectedAmbience = localStorage.getItem('selectedAmbience');
+        const selectedAmbienceTitle = localStorage.getItem('selectedAmbienceTitle') || 'Beach Waves';
+        const selectedAmbienceImg = localStorage.getItem('selectedAmbienceImg');
+        const ambienceControls = document.getElementById('ambienceControls');
+        const ambienceTitle = document.getElementById('ambienceTitle');
+        const ambienceImage = document.getElementById('ambienceImage');
+        const backgroundAmbience = document.getElementById('backgroundAmbience');
+        const ambiencePauseBtn = document.getElementById('ambiencePauseBtn');
+        const ambienceResumeBtn = document.getElementById('ambienceResumeBtn');
+        
+        if (selectedAmbience && selectedAmbience !== 'none') {
+            // Show ambience controls and set title
+            ambienceControls.classList.remove('hidden');
+            ambienceTitle.textContent = selectedAmbienceTitle;
+            
+            // Display ambience image if available
+            if (selectedAmbienceImg) {
+                ambienceImage.src = selectedAmbienceImg;
+                ambienceImage.style.display = 'block';
+            }
+            
+            // Load ambience directly (GitHub raw URLs should work)
+            backgroundAmbience.src = selectedAmbience;
+            backgroundAmbience.volume = 0.4; // Slightly louder ambience
+            backgroundAmbience.load();
+            
+            // Handle successful load
+            backgroundAmbience.addEventListener('loadeddata', function onLoaded() {
+                backgroundAmbience.removeEventListener('loadeddata', onLoaded);
+                console.log('Ambience loaded successfully');
+                ambienceTitle.textContent = selectedAmbienceTitle;
+            }, { once: true });
+            
+            // Handle can play - auto-start ambience
+            backgroundAmbience.addEventListener('canplay', function onCanPlay() {
+                backgroundAmbience.removeEventListener('canplay', onCanPlay);
+                console.log('Ambience can play');
+                // Auto-start ambience
+                const playPromise = backgroundAmbience.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        console.log('Ambience auto-playing successfully');
+                        updateAmbienceButtonState();
+                    }).catch(error => {
+                        console.log('Auto-play prevented, user interaction may be required:', error);
+                    });
+                }
+            }, { once: true });
+            
+            // Handle errors
+            backgroundAmbience.addEventListener('error', function onError(e) {
+                backgroundAmbience.removeEventListener('error', onError);
+                console.error('Ambience error:', backgroundAmbience.error);
+                ambienceTitle.innerHTML = selectedAmbienceTitle + '<br><small style="color: red; font-size: 0.7em;">Error loading</small>';
+            }, { once: true });
+            
+            // Update button visibility and rotation based on playback state
+            function updateAmbienceButtonState() {
+                if (backgroundAmbience.paused) {
+                    ambienceControls.classList.remove('music-playing');
+                    ambienceControls.classList.add('music-paused');
+                    // Stop rotation when paused
+                    ambienceImage.classList.remove('rotating');
+                } else {
+                    ambienceControls.classList.remove('music-paused');
+                    ambienceControls.classList.add('music-playing');
+                    // Start rotation when playing
+                    ambienceImage.classList.add('rotating');
+                }
+            }
+            
+            // Listen to play/pause events
+            backgroundAmbience.addEventListener('play', updateAmbienceButtonState);
+            backgroundAmbience.addEventListener('pause', updateAmbienceButtonState);
+            
+            // Also try on first user interaction (for autoplay restrictions)
+            document.addEventListener('click', function playOnClick(e) {
+                // Ignore clicks on the ambience controls so Pause/Resume work on first click
+                if (ambienceControls && ambienceControls.contains(e.target)) {
+                    return;
+                }
+                if (backgroundAmbience.paused && backgroundAmbience.readyState >= 2) {
+                    backgroundAmbience.play().then(() => {
+                        updateAmbienceButtonState();
+                    }).catch(error => {
+                        console.log('Play error on click:', error);
+                    });
+                }
+                document.removeEventListener('click', playOnClick);
+            }, { once: true });
+            
+            // Pause button
+            ambiencePauseBtn.addEventListener('click', function() {
+                backgroundAmbience.pause();
+                updateAmbienceButtonState();
+            });
+            
+            // Resume button
+            ambienceResumeBtn.addEventListener('click', function() {
+                if (backgroundAmbience.readyState >= 2) {
+                    backgroundAmbience.play().then(() => {
+                        updateAmbienceButtonState();
+                    }).catch(error => {
+                        console.log('Resume error:', error);
+                        backgroundAmbience.load();
+                        setTimeout(() => {
+                            backgroundAmbience.play().then(() => {
+                                updateAmbienceButtonState();
+                            }).catch(e => console.log('Retry failed:', e));
+                        }, 500);
+                    });
+                } else {
+                    backgroundAmbience.load();
+                    setTimeout(() => {
+                        backgroundAmbience.play().then(() => {
+                            updateAmbienceButtonState();
+                        }).catch(e => console.log('Play after load failed:', e));
+                    }, 500);
+                }
+            });
+            
+            // Initial state
+            updateAmbienceButtonState();
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            min-height: 100vh;
+            width: 100vw;
+            background-image: url('https://i.postimg.cc/GmQ8Zrwk/frontpage.png');
+            background-size: contain;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-color: black;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .left-content {
+            position: absolute;
+            left: 20%;
+            top: 28%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            /* Tie the content width to the viewport so it shrinks with the background */
+            max-width: min(850px, 70vw);
+        }
+        
+        .welcome-image {
+            width: 100%;
+            /* Keep proportional to viewport so it stays inside the background illustration */
+            max-width: min(750px, 60vw);
+            height: auto;
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+            transition: opacity 0.3s ease;
+        }
+        
+        .artist-statement {
+            display: none;
+            width: 100%;
+            max-width: min(750px, 70vw);
+            height: auto;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFE5F1 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 60vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+                        inset 0 0 0 3px rgba(255, 182, 193, 0.3);
+            font-size: 1em;
+            line-height: 1.6;
+            color: #333;
+            border: 3px solid rgba(255, 182, 193, 0.5);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+            transition: opacity 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .artist-statement.show {
+            display: block;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+        
+        .welcome-image.hide {
+            display: none;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .action-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        }
+        
+        .action-button img {
+            display: block;
+            width: 100%;
+            /* Buttons shrink with screen so they don't extend past the background */
+            max-width: min(280px, 22vw);
+            height: auto;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-0.5px, 0.5px) rotate(-0.3deg); }
+            50% { transform: translate(0.5px, -0.5px) rotate(0.3deg); }
+            75% { transform: translate(-0.5px, -0.5px) rotate(-0.3deg); }
+        }
+        
+        .action-button.shake {
+            animation: shake 2s ease-in-out infinite;
+        }
+        
+        .action-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .action-button.shake:hover {
+            animation: shake 2s ease-in-out infinite;
+            transform: scale(1.05);
+        }
+        
+        @media (max-width: 1024px) {
+            .left-content {
+                left: 3%;
+                max-width: min(450px, 80vw);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .left-content {
+                position: relative;
+                left: auto;
+                top: auto;
+                transform: none;
+                margin: 50px auto;
+                padding: 0 20px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .artist-statement {
+                max-width: 90%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="left-content">
+        <img src="https://i.postimg.cc/nL2xG7hJ/welcome.png" alt="Welcome" class="welcome-image" id="welcomeImage">
+        
+        <div class="artist-statement" id="artistStatement">
+            <h2 style="font-family: 'Fredoka One', cursive; color: #6c1130; margin-bottom: 15px; text-align: center;"> Artist Statement</h2>
+            <p style="margin-bottom: 15px;">Cafe For You is a cozy website designed for cozy people to have something in the background for study sessions, practicing hobbies, yoga, sleep, or ambience in any occasion they want. Set in a cafe, users can choose what background cafe, food item, drink item, music, and sound effects they want. All assets are hand drawn and given a storybook, cozy feel. Though customization is limited due to time management, I have put quality into the designs to assure simple, cute aesthetics. It also includes sound loops and overlapping audios so users can enjoy music and ambience however they want to.</p>
+            <p style="margin-bottom: 15px;">The main inspiration for this final project were YouTube videos to fall asleep, study, or have in the background. I love these videos but sometimes, I feel like I can’t find the perfect one or I want a different version of the one I got used to. I would waste my time scrolling for the perfect video because it didn’t have visuals or sound I wanted. For my project, I wanted to create a website where users can customize their visuals and sounds to fall asleep, study, or have in the background. Ever since I was a kid, I wanted to make a cute, drawn game or website as I learned basic coding. I was also always inspired by food and cozy environments. Now, I finally made my cozy, interactive website that I am proud of.</p>
+            <p style="margin-bottom: 15px;">Isabella Ballesteros</p>
+        </div>
+        
+        <div class="button-group">
+            <button class="action-button shake" id="whatIsItBtn">
+                <img src="https://i.postimg.cc/wvBpfv7r/whatisit.png" alt="What is it?">
+            </button>
+            
+            <a href="page1.html" class="action-button shake">
+                <img src="https://i.postimg.cc/XvLWkF7Q/letsgetstarted.png" alt="Let's Get Started">
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        const whatIsItBtn = document.getElementById('whatIsItBtn');
+        const welcomeImage = document.getElementById('welcomeImage');
+        const artistStatement = document.getElementById('artistStatement');
+        let isShowingStatement = false;
+        
+        function showArtistStatement() {
+            welcomeImage.classList.add('hide');
+            artistStatement.classList.add('show');
+            isShowingStatement = true;
+        }
+        
+        function hideArtistStatement() {
+            welcomeImage.classList.remove('hide');
+            artistStatement.classList.remove('show');
+            isShowingStatement = false;
+        }
+        
+        whatIsItBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (!isShowingStatement) {
+                showArtistStatement();
+            } else {
+                hideArtistStatement();
+            }
+        });
+        
+        // Close artist statement when clicking outside
+        document.addEventListener('click', function(e) {
+            if (isShowingStatement && 
+                !artistStatement.contains(e.target) && 
+                !whatIsItBtn.contains(e.target)) {
+                hideArtistStatement();
+            }
+        });
+        
+        // Prevent closing when clicking inside artist statement
+        artistStatement.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+</body>
+</html>

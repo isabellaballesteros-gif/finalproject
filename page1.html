@@ -1,0 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Season</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            min-height: 100vh;
+            background-image: url('https://i.postimg.cc/rFhVts9Y/Menu2.jpg');
+            background-size: 100% auto;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-color: #000;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        .instructions-text {
+            display: none;
+            width: 100%;
+            max-width: 750px;
+            height: auto;
+            background: linear-gradient(135deg, #FFF5F7 0%, #FFE5F1 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-height: 60vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2),
+                        inset 0 0 0 3px rgba(255, 182, 193, 0.3);
+            font-size: 1.3em;
+            line-height: 1.6;
+            color: #333;
+            border: 3px solid rgba(255, 182, 193, 0.5);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+            transition: opacity 0.3s ease;
+            margin: 20px auto;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2000;
+        }
+        
+        .instructions-text.show {
+            display: block;
+        }
+        
+        .menu-container {
+            background: transparent;
+            border-radius: 30px;
+            padding: 50px 40px;
+            max-width: 1000px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            margin-top: 100px;
+        }
+        
+        .menu-header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+        }
+        
+        .menu-section {
+            margin-bottom: 80px;
+        }
+        
+        .menu-section:last-of-type {
+            margin-bottom: 30px;
+        }
+        
+        .section-divider {
+            height: 4px;
+            background: rgba(0, 0, 0, 0.25);
+            margin: 50px 0;
+            border-radius: 4px;
+        }
+        
+        h1 {
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            margin-bottom: 10px;
+            font-size: 3.5em;
+            text-align: center;
+            text-shadow: none;
+            letter-spacing: normal;
+            position: relative;
+        }
+        
+        .menu-subtitle {
+            text-align: center;
+            color: #000;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-top: 10px;
+            font-style: normal;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .button-container.music-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            max-width: 100%;
+        }
+        
+        .button-container.season-container {
+            flex-wrap: nowrap;
+            justify-content: center;
+            gap: 20px;
+        }
+        
+        .button-container.dessert-container,
+        .button-container.drink-container {
+            max-width: 100%;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 30px;
+        }
+        
+        .button-container.dessert-container .dessert-button,
+        .button-container.drink-container .drink-button {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Make all grids compress more on smaller screens so buttons shrink with the layout */
+        @media (max-width: 1200px) {
+            .button-container.dessert-container,
+            .button-container.drink-container,
+            .button-container.music-container {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 18px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .button-container.dessert-container,
+            .button-container.drink-container,
+            .button-container.music-container {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            .button-container.dessert-container,
+            .button-container.drink-container,
+            .button-container.music-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-0.5px, 0.5px) rotate(-0.3deg); }
+            50% { transform: translate(0.5px, -0.5px) rotate(0.3deg); }
+            75% { transform: translate(-0.5px, -0.5px) rotate(-0.3deg); }
+        }
+        
+        .season-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: shake 2s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .season-button img {
+            display: block;
+            /* Shrinks with screen so it stays inside the background image */
+            width: min(18vw, 200px);
+            height: auto;
+            border-radius: 15px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            transition: all 0.3s ease;
+        }
+        
+        .season-button .caption {
+            margin-top: 10px;
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            font-size: clamp(0.9rem, 1.6vw, 1.2rem);
+            text-align: center;
+            max-width: min(18vw, 200px);
+            line-height: 1.4;
+            animation: none !important;
+        }
+        
+        .season-button .image-wrapper {
+            display: inline-block;
+        }
+        
+        .season-button:not(.selected):hover {
+            animation: shake 0.5s ease-in-out infinite;
+            transform: scale(1.08) translateY(-5px);
+        }
+        
+        .season-button:not(.selected):hover img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 0 20px rgba(255, 182, 193, 0.5));
+        }
+        
+        .season-button.selected {
+            transform: scale(1.05);
+        }
+        
+        .season-button.selected .image-wrapper {
+            background: rgba(255, 255, 255, 0.75);
+            border: 4px solid #FFB6C1;
+            border-radius: 20px;
+            padding: 5px;
+        }
+        
+        .season-button.selected img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            animation: none;
+        }
+        
+        .order-button {
+            margin-top: 30px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: none;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            pointer-events: none;
+            position: relative;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        }
+        
+        .order-button img {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+        }
+        
+        .order-button.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .order-button:hover.active {
+            transform: scale(1.05);
+            filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+        }
+        
+        .order-button:active.active {
+            transform: scale(1.02);
+        }
+        
+        
+        .menu-section h2 {
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-shadow: none;
+            letter-spacing: normal;
+            text-align: center;
+        }
+        
+        /* Center and space section note paragraphs directly under section titles */
+        .menu-section > p {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .dessert-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .dessert-button img {
+            animation: shake 2s ease-in-out infinite;
+        }
+        
+        .dessert-button img {
+            display: block;
+            /* Smaller by default and tied to its grid column so it shrinks with the layout */
+            width: 75%;
+            max-width: 160px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            transition: all 0.3s ease;
+        }
+        
+        .dessert-button .caption {
+            margin-top: 10px;
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            text-align: center;
+            max-width: 75%;
+            line-height: 1.4;
+            animation: none !important;
+        }
+        
+        .dessert-button .image-wrapper {
+            display: inline-block;
+        }
+        
+        .dessert-button:not(.selected):hover {
+            transform: scale(1.08) translateY(-5px);
+        }
+        
+        .dessert-button:not(.selected):hover img {
+            animation: shake 0.5s ease-in-out infinite;
+        }
+        
+        .dessert-button:not(.selected):hover img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 0 20px rgba(255, 182, 193, 0.5));
+        }
+        
+        .dessert-button.selected {
+            transform: scale(1.05);
+        }
+        
+        .dessert-button.selected .image-wrapper {
+            background: rgba(255, 255, 255, 0.75);
+            border: 4px solid #FFB6C1;
+            border-radius: 20px;
+            padding: 5px;
+        }
+        
+        .dessert-button.selected img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            animation: none;
+        }
+        
+        .drink-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            animation: shake 2s ease-in-out infinite;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .drink-button img {
+            display: block;
+            /* Smaller by default and tied to its grid column so it shrinks with the layout */
+            width: 75%;
+            max-width: 160px;
+            height: auto;
+            object-fit: contain;
+            border-radius: 15px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            transition: all 0.3s ease;
+        }
+        
+        .drink-button .caption {
+            margin-top: 10px;
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            text-align: center;
+            max-width: 75%;
+            line-height: 1.4;
+            animation: none !important;
+        }
+        
+        .drink-button .image-wrapper {
+            display: inline-block;
+        }
+        
+        .drink-button:not(.selected):hover {
+            transform: scale(1.08) translateY(-5px);
+        }
+        
+        .drink-button:not(.selected):hover img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 0 20px rgba(255, 182, 193, 0.5));
+        }
+        
+        .drink-button.selected {
+            transform: scale(1.05);
+        }
+        
+        .drink-button.selected .image-wrapper {
+            background: rgba(255, 255, 255, 0.75);
+            border: 4px solid #FFB6C1;
+            border-radius: 20px;
+            padding: 5px;
+        }
+        
+        .drink-button.selected img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            animation: none;
+        }
+        
+        .home-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s ease;
+        }
+        
+        .home-button img {
+            display: block;
+            /* Let the back button scale down on small screens */
+            width: min(25vw, 160px);
+            height: auto;
+        }
+        
+        .home-button:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+        }
+        
+        .tutorial-button {
+            position: fixed;
+            top: 20px;
+            left: 200px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            z-index: 1001;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+            transition: all 0.3s ease;
+        }
+        
+        .tutorial-button img {
+            display: block;
+            /* Let the tutorial button scale down on small screens */
+            width: min(25vw, 160px);
+            height: auto;
+        }
+        
+        .tutorial-button:hover {
+            transform: scale(1.1);
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.4));
+        }
+        
+        .music-button {
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .music-button .image-wrapper {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .music-button img {
+            display: block;
+            /* Smaller default and scales with column width so it shrinks on small screens */
+            width: 80%;
+            max-width: 150px;
+            height: auto;
+            border-radius: 15px;
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+            transition: all 0.3s ease;
+        }
+        
+        .music-button .text-container {
+            margin-top: 8px;
+            font-family: 'Nunito', sans-serif;
+            color: #000;
+            font-size: clamp(0.85rem, 1.4vw, 1.1rem);
+            text-align: center;
+            max-width: 80%;
+            line-height: 1.35;
+            font-weight: 600;
+        }
+        
+        .music-button:not(.selected):hover {
+            transform: scale(1.08) translateY(-5px);
+        }
+        
+        .music-button:not(.selected):hover img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25)) drop-shadow(0 0 20px rgba(255, 182, 193, 0.5));
+        }
+        
+        .music-button.selected {
+            transform: scale(1.05);
+        }
+        
+        .music-button.selected .image-wrapper {
+            background: rgba(255, 255, 255, 0.75);
+            border: 4px solid #FFB6C1;
+            border-radius: 20px;
+            padding: 5px;
+        }
+        
+        .music-button.selected img {
+            filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="home-button">
+        <img src="https://i.postimg.cc/dt853Zmj/back.png" alt="Back to Home">
+    </a>
+    <button class="tutorial-button" id="tutorialBtn">
+        <img src="https://i.postimg.cc/zf5Z31g8/Tutorial.png" alt="Tutorial">
+    </button>
+    <div class="instructions-text" id="instructionsText">
+        <h2 style="font-family: 'Fredoka One', cursive; color: #000000; margin-bottom: 15px; text-align: center;">Instructions</h2>
+        <p style="margin-bottom: 15px;">Choose your cafe, drink, dessert, music, and/or background ambiance! When you click order, you will be taken to a new page to see your selections! After that, just sit back, relax, study, sleep, or keep the visuals, sounds, and music playing for a gathering. The music has an endless loop with no ads to keep you worry free and do what you got to do in peace. If you want to change your selections, simply go back to this page by clicking the "edit" button.</p>
+    </div>
+    <div class="menu-container">
+        <div class="menu-header">
+        </div>
+        
+        <div class="menu-section">
+            <h2>Select Your Cafe</h2>
+            <div class="button-container season-container">
+                <button class="season-button" data-season="summer" data-bg="https://i.postimg.cc/zXP5Rz6C/summercafe.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/MKrxj6NB/sunbutton.png" alt="Summer"></div>
+                    <p class="caption">Summer</p>
+                </button>
+                <button class="season-button" data-season="fall" data-bg="https://i.postimg.cc/c45Z8x21/fallcafe.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/3JwYR4SN/fallbutton.png" alt="Fall"></div>
+                    <p class="caption">Fall</p>
+                </button>
+                <button class="season-button" data-season="spring" data-bg="https://i.postimg.cc/pX1xnW49/springcafe.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/02HxJkF2/springbutton.png" alt="Spring"></div>
+                    <p class="caption">Spring</p>
+                </button>
+                <button class="season-button" data-season="winter" data-bg="https://i.postimg.cc/651wGWgL/wintercafe.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/VLNm6rGd/snowmanbutton.png" alt="Winter"></div>
+                    <p class="caption">Winter</p>
+                </button>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="menu-section">
+            <h2>Drink</h2>
+            <div class="button-container drink-container">
+                <button class="drink-button" data-drink="boba" data-drink-img="https://i.postimg.cc/m2vGf9ZM/boba-(1).png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/m2vGf9ZM/boba-(1).png" alt="Boba"></div>
+                    <p class="caption">Thai Tea Boba</p>
+                </button>
+                <button class="drink-button" data-drink="coffee" data-drink-img="https://i.postimg.cc/SQPBC9MD/coffee.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/SQPBC9MD/coffee.png" alt="Coffee"></div>
+                    <p class="caption">Coffee</p>
+                </button>
+                <button class="drink-button" data-drink="horchata" data-drink-img="https://i.postimg.cc/15kZhFR0/horchata.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/15kZhFR0/horchata.png" alt="Horchata"></div>
+                    <p class="caption">Horchata</p>
+                </button>
+                <button class="drink-button" data-drink="hotcocoa" data-drink-img="https://i.postimg.cc/jSyYsjCD/hotcocoa.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/jSyYsjCD/hotcocoa.png" alt="Hot Cocoa"></div>
+                    <p class="caption">Hot Cocoa</p>
+                </button>
+                <button class="drink-button" data-drink="latte" data-drink-img="https://i.postimg.cc/cLfGsJ6r/latte.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/cLfGsJ6r/latte.png" alt="Latte"></div>
+                    <p class="caption">Latte</p>
+                </button>
+                <button class="drink-button" data-drink="lemonade" data-drink-img="https://i.postimg.cc/nhqfHLMQ/lemonade.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/nhqfHLMQ/lemonade.png" alt="Lemonade"></div>
+                    <p class="caption">Lemonade</p>
+                </button>
+                <button class="drink-button" data-drink="mangosago" data-drink-img="https://i.postimg.cc/jSyYsjC7/mangosago.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/jSyYsjC7/mangosago.png" alt="Mango Sago"></div>
+                    <p class="caption">Mango Sago</p>
+                </button>
+                <button class="drink-button" data-drink="matcha" data-drink-img="https://i.postimg.cc/y80CVNWR/matcha.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/y80CVNWR/matcha.png" alt="Matcha"></div>
+                    <p class="caption">Matcha latte</p>
+                </button>
+                <button class="drink-button" data-drink="strawberrybananasmoothie" data-drink-img="https://i.postimg.cc/4xpRJ3nV/strawberrybananasmoothie.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/4xpRJ3nV/strawberrybananasmoothie.png" alt="Strawberry Banana Smoothie"></div>
+                    <p class="caption">Strawberry Banana Smoothie</p>
+                </button>
+                <button class="drink-button" data-drink="tea" data-drink-img="https://i.postimg.cc/Hkb1pLjQ/tea.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/Hkb1pLjQ/tea.png" alt="Tea"></div>
+                    <p class="caption">Herbal Tea</p>
+                </button>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="menu-section">
+            <h2>Dessert</h2>
+            <div class="button-container dessert-container">
+                <button class="dessert-button" data-dessert="cookies" data-dessert-img="https://i.postimg.cc/DyznZJjm/Cookies.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/L6s2XYCm/cookiebutton.png" alt="Cookies"></div>
+                    <p class="caption">Chocolate Chip Cookies</p>
+                </button>
+                <button class="dessert-button" data-dessert="bibingka" data-dessert-img="https://i.postimg.cc/K8HBv9Ms/bibingka.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/bwysn4bC/bibingkabutton.png" alt="Bibingka"></div>
+                    <p class="caption">Bibingka Cake</p>
+                </button>
+                <button class="dessert-button" data-dessert="blueberrymuffin" data-dessert-img="https://i.postimg.cc/BvPD8x5M/blueberrymuffin.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/y8LWynyK/blueberrymuffinbutton.png" alt="Blueberry Muffin"></div>
+                    <p class="caption">Blueberry Muffin</p>
+                </button>
+                <button class="dessert-button" data-dessert="cinnamonroll" data-dessert-img="https://i.postimg.cc/g0LRwvyM/cinnamonroll.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/FHT1VGgM/cinnamonrollbutton.png" alt="Cinnamon Roll"></div>
+                    <p class="caption">Cinnamon Roll</p>
+                </button>
+                <button class="dessert-button" data-dessert="croissant" data-dessert-img="https://i.postimg.cc/76vzSfXN/croissant.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/DwxmP5P3/croissantbutton.png" alt="Croissant"></div>
+                    <p class="caption">Croissant</p>
+                </button>
+                <button class="dessert-button" data-dessert="gingerbread" data-dessert-img="https://i.postimg.cc/zBmhTVpp/gingerbreadman.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/BnmtBNB9/gingerbreadbutton.png" alt="Gingerbread"></div>
+                    <p class="caption">Gingerbread Man</p>
+                </button>
+                <button class="dessert-button" data-dessert="macaron" data-dessert-img="https://i.postimg.cc/sXFW5vwd/macarons.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/CKd5PDcV/macaronbutton.png" alt="Macaron"></div>
+                    <p class="caption">Macarons</p>
+                </button>
+                <button class="dessert-button" data-dessert="matchadonut" data-dessert-img="https://i.postimg.cc/sXFW5vwC/matchadonut.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/XvXqHFsW/matchadonutbutton.png" alt="Matcha Donut"></div>
+                    <p class="caption">Matcha Mochi Donut</p>
+                </button>
+                <button class="dessert-button" data-dessert="pumpkinpie" data-dessert-img="https://i.postimg.cc/fLx9CDrQ/pumpkinpie.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/CKd5PDcp/pumkinpiebutton.png" alt="Pumpkin Pie"></div>
+                    <p class="caption">Pumpkin Pie Slice</p>
+                </button>
+                <button class="dessert-button" data-dessert="strawberrycake" data-dessert-img="https://i.postimg.cc/PxmwyTRx/strawberrycake.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/Zq0n73w4/strawberrycakebutton.png" alt="Strawberry Cake"></div>
+                    <p class="caption">Strawberry Shortcake Slice</p>
+                </button>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="menu-section">
+            <h2>Background Music</h2>
+            <p>All music is from DayStar and Starry Attic from YouTube.</p>
+            <div class="button-container music-container">
+                <button class="music-button" data-music="https://raw.githubusercontent.com/isabellaballesteros-gif/merrychristmas/refs/heads/main/Untitled%20%E2%80%91%20Made%20with%20FlexClip.mp3" data-music-title="Merry Christmas" data-music-img="https://i.postimg.cc/q7t54s0x/christmas.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/q7t54s0x/christmas.png" alt="Merry Christmas"></div>
+                    <div class="text-container">Merry Christmas</div>
+                </button>
+                <button class="music-button" data-music="https://raw.githubusercontent.com/isabellaballesteros-gif/teatime/refs/heads/main/Untitled%20%E2%80%91%20Made%20with%20FlexClip%20(1).mp3" data-music-title="Teatime" data-music-img="https://i.postimg.cc/3wycYX7s/teatime.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/3wycYX7s/teatime.png" alt="Teatime"></div>
+                    <div class="text-container">Teatime</div>
+                </button>
+                <button class="music-button" data-music="https://raw.githubusercontent.com/isabellaballesteros-gif/smellofflowers/refs/heads/main/smellofflowers%20%E2%80%91%20Made%20with%20FlexClip.mp3" data-music-title="Smell of Flowers" data-music-img="https://i.postimg.cc/9f4nCdVs/smellofflowers.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/9f4nCdVs/smellofflowers.png" alt="Smell of Flowers"></div>
+                    <div class="text-container">Smell of Flowers</div>
+                </button>
+                <button class="music-button" data-music="https://raw.githubusercontent.com/isabellaballesteros-gif/dessert/refs/heads/main/Untitled%20%E2%80%91%20Made%20with%20FlexClip%20(3).mp3" data-music-title="Today's Dessert" data-music-img="https://i.postimg.cc/pry96LKy/Todaysdessert.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/pry96LKy/Todaysdessert.png" alt="Today's Dessert"></div>
+                    <div class="text-container">Today's Dessert</div>
+                </button>
+                <button class="music-button" data-music="none" data-music-title="No Music" data-music-img="https://i.postimg.cc/s2BNsYym/nosound.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/s2BNsYym/nosound.png" alt="No Music"></div>
+                    <div class="text-container">No Music</div>
+                </button>
+            </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        
+        <div class="menu-section">
+            <h2>Sound Ambience</h2>
+            <p> All sounds are royalty free and Coffee ASMR is from twin album on YouTube.</p>
+            <div class="button-container music-container">
+                <button class="music-button" data-ambience="https://raw.githubusercontent.com/isabellaballesteros-gif/beachwaves/refs/heads/main/Untitled%20%E2%80%91%20Made%20with%20FlexClip%20(2).mp3" data-ambience-title="Beach Waves" data-ambience-img="https://i.postimg.cc/8zzYn8Yz/beachwaves.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/8zzYn8Yz/beachwaves.png" alt="Beach Waves"></div>
+                    <div class="text-container">Beach Waves</div>
+                </button>
+                <button class="music-button" data-ambience="https://raw.githubusercontent.com/isabellaballesteros-gif/restaurant/refs/heads/main/restaurant%20%E2%80%91%20Made%20with%20FlexClip.mp3" data-ambience-title="Restaurant Sounds" data-ambience-img="https://i.postimg.cc/PqLRTWh7/restaurantsounds.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/PqLRTWh7/restaurantsounds.png" alt="Restaurant Sounds"></div>
+                    <div class="text-container">Restaurant Sounds</div>
+                </button>
+                <button class="music-button" data-ambience="https://raw.githubusercontent.com/isabellaballesteros-gif/rain/refs/heads/main/rain%20%E2%80%91%20Made%20with%20FlexClip.mp3" data-ambience-title="Rain" data-ambience-img="https://i.postimg.cc/PqLRTWhM/rain.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/PqLRTWhM/rain.png" alt="Rain"></div>
+                    <div class="text-container">Rain</div>
+                </button>
+                <button class="music-button" data-ambience="https://raw.githubusercontent.com/isabellaballesteros-gif/coffeeasmr/refs/heads/main/Untitled%20%E2%80%91%20Made%20with%20FlexClip%20(4).mp3" data-ambience-title="Cafe ASMR" data-ambience-img="https://i.postimg.cc/W4DHTGjn/cafeasmr.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/W4DHTGjn/cafeasmr.png" alt="Cafe ASMR"></div>
+                    <div class="text-container">Cafe ASMR</div>
+                </button>
+                <button class="music-button" data-ambience="none" data-ambience-title="No Ambience" data-ambience-img="https://i.postimg.cc/s2BNsYym/nosound.png">
+                    <div class="image-wrapper"><img src="https://i.postimg.cc/s2BNsYym/nosound.png" alt="No Ambience"></div>
+                    <div class="text-container">No Ambience</div>
+                </button>
+            </div>
+        </div>
+        
+        <a href="page2.html" class="order-button" id="continueBtn">
+            <img src="https://i.postimg.cc/1Xw4M1rH/order.png" alt="Order">
+        </a>
+    </div>
+    
+    <script>
+        // Cute button click sound effect
+        function playClickSound() {
+            // Create a simple cute pop sound using Web Audio API
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Create a cute "pop" sound
+            oscillator.frequency.setValueAtTime(800, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(400, audioContext.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+            
+            oscillator.type = 'sine';
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.1);
+        }
+        
+        const buttons = document.querySelectorAll('.season-button');
+        const dessertButtons = document.querySelectorAll('.dessert-button');
+        const drinkButtons = document.querySelectorAll('.drink-button');
+        const musicButtons = document.querySelectorAll('.music-button[data-music]');
+        const ambienceButtons = document.querySelectorAll('.music-button[data-ambience]');
+        const continueBtn = document.getElementById('continueBtn');
+        let selectedSeason = null;
+        let selectedBg = null;
+        let selectedDessert = null;
+        let selectedDessertImg = null;
+        let selectedDrink = null;
+        let selectedDrinkImg = null;
+        let selectedMusic = null;
+        let selectedAmbience = null;
+        
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                playClickSound();
+                
+                // Remove selected class from all buttons
+                buttons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('selected');
+                
+                // Store selected season and background
+                selectedSeason = this.getAttribute('data-season');
+                selectedBg = this.getAttribute('data-bg');
+                
+                // Save to localStorage
+                localStorage.setItem('selectedSeason', selectedSeason);
+                localStorage.setItem('selectedBackground', selectedBg);
+                
+                // Enable order button
+                continueBtn.classList.add('active');
+            });
+        });
+        
+        dessertButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                playClickSound();
+                
+                // Remove selected class from all dessert buttons
+                dessertButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('selected');
+                
+                // Store selected dessert and dessert image
+                selectedDessert = this.getAttribute('data-dessert');
+                selectedDessertImg = this.getAttribute('data-dessert-img');
+                
+                // Save to localStorage
+                localStorage.setItem('selectedDessert', selectedDessert);
+                localStorage.setItem('selectedDessertImg', selectedDessertImg);
+            });
+        });
+        
+        drinkButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                playClickSound();
+                
+                // Remove selected class from all drink buttons
+                drinkButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('selected');
+                
+                // Store selected drink and drink image
+                selectedDrink = this.getAttribute('data-drink');
+                selectedDrinkImg = this.getAttribute('data-drink-img');
+                
+                // Save to localStorage
+                localStorage.setItem('selectedDrink', selectedDrink);
+                localStorage.setItem('selectedDrinkImg', selectedDrinkImg);
+            });
+        });
+        
+        // Check if a season was already selected (e.g., if user goes back)
+        const savedSeason = localStorage.getItem('selectedSeason');
+        const savedBg = localStorage.getItem('selectedBackground');
+        if (savedSeason && savedBg) {
+            buttons.forEach(button => {
+                if (button.getAttribute('data-season') === savedSeason) {
+                    button.classList.add('selected');
+                    continueBtn.classList.add('active');
+                }
+            });
+        }
+        
+        // Check if a dessert was already selected
+        const savedDessert = localStorage.getItem('selectedDessert');
+        if (savedDessert) {
+            dessertButtons.forEach(button => {
+                if (button.getAttribute('data-dessert') === savedDessert) {
+                    button.classList.add('selected');
+                }
+            });
+        }
+        
+        // Check if a drink was already selected
+        const savedDrink = localStorage.getItem('selectedDrink');
+        if (savedDrink) {
+            drinkButtons.forEach(button => {
+                if (button.getAttribute('data-drink') === savedDrink) {
+                    button.classList.add('selected');
+                }
+            });
+        }
+        
+        // Music button handlers
+        musicButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                playClickSound();
+                
+                // Remove selected class from all music buttons only
+                musicButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('selected');
+                
+                // Store selected music, title, and image
+                selectedMusic = this.getAttribute('data-music');
+                const musicTitle = this.getAttribute('data-music-title');
+                const musicImg = this.getAttribute('data-music-img');
+                
+                // Save to localStorage
+                localStorage.setItem('selectedMusic', selectedMusic);
+                localStorage.setItem('selectedMusicTitle', musicTitle);
+                if (musicImg) {
+                    localStorage.setItem('selectedMusicImg', musicImg);
+                }
+            });
+        });
+        
+        // Ambience button handlers
+        ambienceButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                playClickSound();
+                
+                // Remove selected class from all ambience buttons only
+                ambienceButtons.forEach(btn => btn.classList.remove('selected'));
+                
+                // Add selected class to clicked button
+                this.classList.add('selected');
+                
+                // Store selected ambience, title, and image
+                selectedAmbience = this.getAttribute('data-ambience');
+                const ambienceTitle = this.getAttribute('data-ambience-title');
+                const ambienceImg = this.getAttribute('data-ambience-img');
+                
+                // Save to localStorage
+                localStorage.setItem('selectedAmbience', selectedAmbience);
+                localStorage.setItem('selectedAmbienceTitle', ambienceTitle);
+                if (ambienceImg) {
+                    localStorage.setItem('selectedAmbienceImg', ambienceImg);
+                }
+            });
+        });
+        
+        // Check if music was already selected
+        const savedMusic = localStorage.getItem('selectedMusic');
+        if (savedMusic) {
+            musicButtons.forEach(button => {
+                if (button.getAttribute('data-music') === savedMusic) {
+                    button.classList.add('selected');
+                }
+            });
+        } else {
+            // Default to no music if nothing selected
+            musicButtons.forEach(button => {
+                if (button.getAttribute('data-music') === 'none') {
+                    button.classList.add('selected');
+                    localStorage.setItem('selectedMusic', 'none');
+                    localStorage.setItem('selectedMusicTitle', 'No Music');
+                }
+            });
+        }
+        
+        // Check if ambience was already selected
+        const savedAmbience = localStorage.getItem('selectedAmbience');
+        if (savedAmbience) {
+            ambienceButtons.forEach(button => {
+                if (button.getAttribute('data-ambience') === savedAmbience) {
+                    button.classList.add('selected');
+                }
+            });
+        } else {
+            // Default to no ambience if nothing selected
+            ambienceButtons.forEach(button => {
+                if (button.getAttribute('data-ambience') === 'none') {
+                    button.classList.add('selected');
+                    localStorage.setItem('selectedAmbience', 'none');
+                    localStorage.setItem('selectedAmbienceTitle', 'No Ambience');
+                }
+            });
+        }
+        
+        // Set body height to match background image dimensions
+        function setBodyHeight() {
+            const img = new Image();
+            img.onload = function() {
+                const imgWidth = this.width;
+                const imgHeight = this.height;
+                const screenWidth = window.innerWidth;
+                
+                // Calculate the scaled height based on 100% width
+                const scaledHeight = (imgHeight / imgWidth) * screenWidth;
+                
+                // Set body min-height to match the scaled image height
+                document.body.style.minHeight = scaledHeight + 'px';
+            };
+            img.src = 'https://i.postimg.cc/rFhVts9Y/Menu2.jpg';
+        }
+        
+        // Set the body height to match image
+        setBodyHeight();
+        
+        // Recalculate on window resize
+        window.addEventListener('resize', setBodyHeight);
+        
+        // Tutorial button functionality
+        const tutorialBtn = document.getElementById('tutorialBtn');
+        const instructionsText = document.getElementById('instructionsText');
+        let isShowingInstructions = false;
+        
+        function showInstructions() {
+            instructionsText.classList.add('show');
+            isShowingInstructions = true;
+        }
+        
+        function hideInstructions() {
+            instructionsText.classList.remove('show');
+            isShowingInstructions = false;
+        }
+        
+        tutorialBtn.addEventListener('click', function(e) {
+            playClickSound();
+            e.stopPropagation();
+            if (!isShowingInstructions) {
+                showInstructions();
+            } else {
+                hideInstructions();
+            }
+        });
+        
+        // Close instructions when clicking outside
+        document.addEventListener('click', function(e) {
+            if (isShowingInstructions && 
+                !instructionsText.contains(e.target) && 
+                !tutorialBtn.contains(e.target)) {
+                hideInstructions();
+            }
+        });
+        
+        // Prevent closing when clicking inside instructions
+        instructionsText.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // Add sound effect to home button
+        const homeButton = document.querySelector('.home-button');
+        if (homeButton) {
+            homeButton.addEventListener('click', function() {
+                playClickSound();
+            });
+        }
+        
+        // Add sound effect to order button
+        if (continueBtn) {
+            continueBtn.addEventListener('click', function() {
+                playClickSound();
+            });
+        }
+    </script>
+</body>
+</html>
+
