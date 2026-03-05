@@ -551,6 +551,57 @@
         .music-button.selected img {
             filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.25));
         }
+        
+        /* iPhone / small-screen tweaks to keep everything inside the background */
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+            
+            .menu-container {
+                margin-top: 60px;
+                padding: 30px 15px;
+            }
+            
+            .menu-section h2 {
+                font-size: 1.8em;
+                margin-bottom: 20px;
+            }
+            
+            .button-container {
+                gap: 18px;
+            }
+            
+            .season-button img {
+                width: min(22vw, 140px);
+            }
+            
+            .dessert-button img,
+            .drink-button img {
+                width: 65%;
+                max-width: 130px;
+            }
+            
+            .music-button img {
+                width: 70%;
+                max-width: 130px;
+            }
+            
+            .home-button {
+                top: 10px;
+                left: 10px;
+            }
+            
+            .tutorial-button {
+                top: 10px;
+                left: auto;
+                right: 10px;
+            }
+            
+            .order-button img {
+                max-width: 220px;
+            }
+        }
     </style>
 </head>
 <body>
